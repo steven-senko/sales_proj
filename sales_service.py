@@ -211,7 +211,7 @@ if __name__ == "__main__":
             'tools.response_headers.headers': [('Content-Type', 'text/plain')],
         }
     }
-
+    cherrypy.config.update({'server.socket_host': '0.0.0.0'})
     cherrypy.engine.subscribe('start', setup_database)
     cherrypy.engine.subscribe('stop', cleanup_database)
 
