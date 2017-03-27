@@ -5,6 +5,8 @@ from nose.tools import assert_equal
 
 from sales_service import SECURE_STRING
 
+_ip = "0.0.0.0:8080"
+
 
 def test_request_response():
     # Send a request to the API server and store the response.
@@ -16,7 +18,7 @@ def test_request_response():
     }
 
     # data = json.dumps(data)
-    r = s.put('http://127.0.0.1:8080/{0}/sku'.format(SECURE_STRING), data=json.dumps(data))
+    r = s.put('http://{0}/{1}/sku'.format(_ip, SECURE_STRING), data=json.dumps(data))
 
     # Confirm that the request-response cycle completed successfully.
 
@@ -34,7 +36,7 @@ def test_request_response():
         "description": "just a test product"
     }
 
-    r = s.put('http://127.0.0.1:8080/{0}/sku'.format(SECURE_STRING), data=json.dumps(data))
+    r = s.put('http://{0}/{1}/sku'.format(_ip, SECURE_STRING), data=json.dumps(data))
 
     # Confirm that the request-response cycle completed successfully.
 
@@ -53,7 +55,7 @@ def test_request_response():
         'data': "test"
     }
     data = json.dumps(data)
-    r = s.delete('http://127.0.0.1:8080/{0}/sku/{1}'.format(SECURE_STRING, "test"))
+    r = s.delete('http://{0}/{1}/sku/{2}'.format(_ip, SECURE_STRING, "test"))
 
     # Confirm that the request-response cycle completed successfully.
     assert_equal((r.status_code, r.text), (200, data))
@@ -64,7 +66,7 @@ def test_request_response():
         'data': "test"
     }
     data = json.dumps(data)
-    r = s.delete('http://127.0.0.1:8080/{0}/sku/{1}'.format(SECURE_STRING, "test"))
+    r = s.delete('http://{0}/{1}/sku/{2}'.format(_ip, SECURE_STRING, "test"))
 
     # Confirm that the request-response cycle completed successfully.
     assert_equal((r.status_code, r.text), (200, data))
@@ -75,7 +77,7 @@ def test_request_response():
         'data': "test1"
     }
     data = json.dumps(data)
-    r = s.delete('http://127.0.0.1:8080/{0}/sku/{1}'.format(SECURE_STRING, "test1"))
+    r = s.delete('http://{0}/{1}/sku/{2}'.format(_ip, SECURE_STRING, "test1"))
 
     # Confirm that the request-response cycle completed successfully.
     assert_equal((r.status_code, r.text), (200, data))
@@ -85,7 +87,7 @@ def test_request_response():
         "last_name": "test"
     }
 
-    r = s.put('http://127.0.0.1:8080/{0}/customer'.format(SECURE_STRING), data=json.dumps(data))
+    r = s.put('http://{0}/{1}/customer'.format(_ip, SECURE_STRING), data=json.dumps(data))
 
     data = {
         'success': True,
@@ -97,7 +99,7 @@ def test_request_response():
     # Confirm that the request-response cycle completed successfully.
     assert_equal((r.status_code, r.text), (200, data))
 
-    r = s.delete('http://127.0.0.1:8080/{0}/customer/{1}'.format(SECURE_STRING, '1'))
+    r = s.delete('http://{0}/{1}/customer/{2}'.format(_ip, SECURE_STRING, '1'))
 
     # Confirm that the request-response cycle completed successfully.
     data = {
@@ -108,7 +110,7 @@ def test_request_response():
 
     assert_equal((r.status_code, r.text), (200, json.dumps(data)))
 
-    r = s.get('http://127.0.0.1:8080/{0}/cart'.format(SECURE_STRING))
+    r = s.get('http://{0}/{1}/cart'.format(_ip, SECURE_STRING))
 
     # Confirm that the request-response cycle completed successfully.
     assert_equal((r.status_code, r.text), (200, u'{}'))
@@ -118,7 +120,7 @@ def test_request_response():
         "sku": "test"
     }
 
-    r = s.put('http://127.0.0.1:8080/{0}/cart'.format(SECURE_STRING), data=json.dumps(data))
+    r = s.put('http://{0}/{1}/cart'.format(_ip, SECURE_STRING), data=json.dumps(data))
 
     data = {
         'success': False,
@@ -131,7 +133,7 @@ def test_request_response():
     # Confirm that the request-response cycle completed successfully.
     assert_equal((r.status_code, r.text), (200, data))
 
-    r = s.get('http://127.0.0.1:8080/{0}/cart'.format(SECURE_STRING))
+    r = s.get('http://{0}/{1}/cart'.format(_ip, SECURE_STRING))
 
     # Confirm that the request-response cycle completed successfully.
     assert_equal((r.status_code, r.text), (200, u'{}'))
@@ -141,7 +143,7 @@ def test_request_response():
         "last_name": "test"
     }
 
-    r = s.put('http://127.0.0.1:8080/{0}/customer'.format(SECURE_STRING), data=json.dumps(data))
+    r = s.put('http://{0}/{1}/customer'.format(_ip, SECURE_STRING), data=json.dumps(data))
 
     data = {
         'success': True,
@@ -158,7 +160,7 @@ def test_request_response():
         "sku": "test"
     }
 
-    r = s.put('http://127.0.0.1:8080/{0}/cart'.format(SECURE_STRING), data=json.dumps(data))
+    r = s.put('http://{0}/{1}/cart'.format(_ip, SECURE_STRING), data=json.dumps(data))
 
     data = {
         'success': False,
@@ -171,7 +173,7 @@ def test_request_response():
     # Confirm that the request-response cycle completed successfully.
     assert_equal((r.status_code, r.text), (200, data))
 
-    r = s.get('http://127.0.0.1:8080/{0}/cart'.format(SECURE_STRING))
+    r = s.get('http://{0}/{1}/cart'.format(_ip, SECURE_STRING))
 
     # Confirm that the request-response cycle completed successfully.
     assert_equal((r.status_code, r.text), (200, u'{}'))
@@ -182,7 +184,7 @@ def test_request_response():
     }
 
     # data = json.dumps(data)
-    r = s.put('http://127.0.0.1:8080/{0}/sku'.format(SECURE_STRING), data=json.dumps(data))
+    r = s.put('http://{0}/{1}/sku'.format(_ip, SECURE_STRING), data=json.dumps(data))
 
     # Confirm that the request-response cycle completed successfully.
 
@@ -200,7 +202,7 @@ def test_request_response():
         "sku": "test"
     }
 
-    r = s.put('http://127.0.0.1:8080/{0}/cart'.format(SECURE_STRING), data=json.dumps(data))
+    r = s.put('http://{0}/{1}/cart'.format(_ip, SECURE_STRING), data=json.dumps(data))
 
     data = {
         'success': True,
@@ -213,7 +215,7 @@ def test_request_response():
     # Confirm that the request-response cycle completed successfully.
     assert_equal((r.status_code, r.text), (200, data))
 
-    r = s.get('http://127.0.0.1:8080/{0}/cart'.format(SECURE_STRING))
+    r = s.get('http://{0}/{1}/cart'.format(_ip, SECURE_STRING))
 
     # Confirm that the request-response cycle completed successfully.
     assert_equal((r.status_code, r.text), (200, u'{"1": ["test"]}'))
@@ -224,7 +226,7 @@ def test_request_response():
     }
 
     # data = json.dumps(data)
-    r = s.put('http://127.0.0.1:8080/{0}/sku'.format(SECURE_STRING), data=json.dumps(data))
+    r = s.put('http://{0}/{1}/sku'.format(_ip, SECURE_STRING), data=json.dumps(data))
 
     # Confirm that the request-response cycle completed successfully.
 
@@ -242,7 +244,7 @@ def test_request_response():
         "sku": "test2"
     }
 
-    r = s.put('http://127.0.0.1:8080/{0}/cart'.format(SECURE_STRING), data=json.dumps(data))
+    r = s.put('http://{0}/{1}/cart'.format(_ip, SECURE_STRING), data=json.dumps(data))
 
     data = {
         'success': True,
@@ -255,7 +257,7 @@ def test_request_response():
     # Confirm that the request-response cycle completed successfully.
     assert_equal((r.status_code, r.text), (200, data))
 
-    r = s.get('http://127.0.0.1:8080/{0}/cart'.format(SECURE_STRING))
+    r = s.get('http://{0}/{1}/cart'.format(_ip, SECURE_STRING))
 
     # Confirm that the request-response cycle completed successfully.
     assert_equal((r.status_code, r.text), (200, u'{"1": ["test", "test2"]}'))
@@ -265,7 +267,7 @@ def test_request_response():
         "sku": "test"
     }
 
-    r = s.put('http://127.0.0.1:8080/{0}/cart'.format(SECURE_STRING), data=json.dumps(data))
+    r = s.put('http://{0}/{1}/cart'.format(_ip, SECURE_STRING), data=json.dumps(data))
 
     data = {
         'success': False,
@@ -284,12 +286,12 @@ def test_request_response():
         'data': "test"
     }
     data = json.dumps(data)
-    r = s.delete('http://127.0.0.1:8080/{0}/sku/{1}'.format(SECURE_STRING, "test"))
+    r = s.delete('http://{0}/{1}/sku/{2}'.format(_ip, SECURE_STRING, "test"))
 
     # Confirm that the request-response cycle completed successfully.
     assert_equal((r.status_code, r.text), (200, data))
 
-    r = s.delete('http://127.0.0.1:8080/{0}/cart/{1}/{2}'.format(SECURE_STRING, 1, 'test'))
+    r = s.delete('http://{0}/{1}/cart/{2}/{3}'.format(_ip, SECURE_STRING, 1, 'test'))
 
     data = {
         'success': True,
@@ -300,7 +302,7 @@ def test_request_response():
     # Confirm that the request-response cycle completed successfully.
     assert_equal((r.status_code, r.text), (200, json.dumps(data)))
 
-    r = s.delete('http://127.0.0.1:8080/{0}/cart/{1}/{2}'.format(SECURE_STRING, 1, 'test2'))
+    r = s.delete('http://{0}/{1}/cart/{2}/{3}'.format(_ip, SECURE_STRING, 1, 'test2'))
 
     data = {
         'success': True,
@@ -317,12 +319,12 @@ def test_request_response():
         'data': "test2"
     }
     data = json.dumps(data)
-    r = s.delete('http://127.0.0.1:8080/{0}/sku/{1}'.format(SECURE_STRING, "test2"))
+    r = s.delete('http://{0}/{1}/sku/{2}'.format(_ip, SECURE_STRING, "test2"))
 
     # Confirm that the request-response cycle completed successfully.
     assert_equal((r.status_code, r.text), (200, data))
 
-    r = s.delete('http://127.0.0.1:8080/{0}/cart/{1}/{2}'.format(SECURE_STRING, 1, 'test'))
+    r = s.delete('http://{0}/{1}/cart/{2}/{3}'.format(_ip, SECURE_STRING, 1, 'test'))
 
     data = {
         'success': False,
@@ -339,12 +341,12 @@ def test_request_response():
         'data': "test"
     }
     data = json.dumps(data)
-    r = s.delete('http://127.0.0.1:8080/{0}/sku/{1}'.format(SECURE_STRING, "test"))
+    r = s.delete('http://{0}/{1}/sku/{2}'.format(_ip, SECURE_STRING, "test"))
 
     # Confirm that the request-response cycle completed successfully.
     assert_equal((r.status_code, r.text), (200, data))
 
-    r = s.delete('http://127.0.0.1:8080/{0}/customer/{1}'.format(SECURE_STRING, '1'))
+    r = s.delete('http://{0}/{1}/customer/{2}'.format(_ip, SECURE_STRING, '1'))
 
     # Confirm that the request-response cycle completed successfully.
     data = {
@@ -359,7 +361,7 @@ def test_request_response():
     # Deleting a customer while products in the cart
     # ==================================================
 
-    r = s.get('http://127.0.0.1:8080/{0}/cart'.format(SECURE_STRING))
+    r = s.get('http://{0}/{1}/cart'.format(_ip, SECURE_STRING))
 
     # Confirm that the request-response cycle completed successfully.
     assert_equal((r.status_code, r.text), (200, u'{}'))
@@ -369,7 +371,7 @@ def test_request_response():
         "sku": "test"
     }
 
-    r = s.put('http://127.0.0.1:8080/{0}/cart'.format(SECURE_STRING), data=json.dumps(data))
+    r = s.put('http://{0}/{1}/cart'.format(_ip, SECURE_STRING), data=json.dumps(data))
 
     data = {
         'success': False,
@@ -382,7 +384,7 @@ def test_request_response():
     # Confirm that the request-response cycle completed successfully.
     assert_equal((r.status_code, r.text), (200, data))
 
-    r = s.get('http://127.0.0.1:8080/{0}/cart'.format(SECURE_STRING))
+    r = s.get('http://{0}/{1}/cart'.format(_ip, SECURE_STRING))
 
     # Confirm that the request-response cycle completed successfully.
     assert_equal((r.status_code, r.text), (200, u'{}'))
@@ -392,7 +394,7 @@ def test_request_response():
         "last_name": "test"
     }
 
-    r = s.put('http://127.0.0.1:8080/{0}/customer'.format(SECURE_STRING), data=json.dumps(data))
+    r = s.put('http://{0}/{1}/customer'.format(_ip, SECURE_STRING), data=json.dumps(data))
 
     data = {
         'success': True,
@@ -409,7 +411,7 @@ def test_request_response():
         "sku": "test"
     }
 
-    r = s.put('http://127.0.0.1:8080/{0}/cart'.format(SECURE_STRING), data=json.dumps(data))
+    r = s.put('http://{0}/{1}/cart'.format(_ip, SECURE_STRING), data=json.dumps(data))
 
     data = {
         'success': False,
@@ -422,7 +424,7 @@ def test_request_response():
     # Confirm that the request-response cycle completed successfully.
     assert_equal((r.status_code, r.text), (200, data))
 
-    r = s.get('http://127.0.0.1:8080/{0}/cart'.format(SECURE_STRING))
+    r = s.get('http://{0}/{1}/cart'.format(_ip, SECURE_STRING))
 
     # Confirm that the request-response cycle completed successfully.
     assert_equal((r.status_code, r.text), (200, u'{}'))
@@ -433,7 +435,7 @@ def test_request_response():
     }
 
     # data = json.dumps(data)
-    r = s.put('http://127.0.0.1:8080/{0}/sku'.format(SECURE_STRING), data=json.dumps(data))
+    r = s.put('http://{0}/{1}/sku'.format(_ip, SECURE_STRING), data=json.dumps(data))
 
     # Confirm that the request-response cycle completed successfully.
 
@@ -451,7 +453,7 @@ def test_request_response():
         "sku": "test"
     }
 
-    r = s.put('http://127.0.0.1:8080/{0}/cart'.format(SECURE_STRING), data=json.dumps(data))
+    r = s.put('http://{0}/{1}/cart'.format(_ip, SECURE_STRING), data=json.dumps(data))
 
     data = {
         'success': True,
@@ -464,7 +466,7 @@ def test_request_response():
     # Confirm that the request-response cycle completed successfully.
     assert_equal((r.status_code, r.text), (200, data))
 
-    r = s.get('http://127.0.0.1:8080/{0}/cart'.format(SECURE_STRING))
+    r = s.get('http://{0}/{1}/cart'.format(_ip, SECURE_STRING))
 
     # Confirm that the request-response cycle completed successfully.
     assert_equal((r.status_code, r.text), (200, u'{"1": ["test"]}'))
@@ -475,7 +477,7 @@ def test_request_response():
     }
 
     # data = json.dumps(data)
-    r = s.put('http://127.0.0.1:8080/{0}/sku'.format(SECURE_STRING), data=json.dumps(data))
+    r = s.put('http://{0}/{1}/sku'.format(_ip, SECURE_STRING), data=json.dumps(data))
 
     # Confirm that the request-response cycle completed successfully.
 
@@ -493,7 +495,7 @@ def test_request_response():
         "sku": "test2"
     }
 
-    r = s.put('http://127.0.0.1:8080/{0}/cart'.format(SECURE_STRING), data=json.dumps(data))
+    r = s.put('http://{0}/{1}/cart'.format(_ip, SECURE_STRING), data=json.dumps(data))
 
     data = {
         'success': True,
@@ -506,7 +508,7 @@ def test_request_response():
     # Confirm that the request-response cycle completed successfully.
     assert_equal((r.status_code, r.text), (200, data))
 
-    r = s.get('http://127.0.0.1:8080/{0}/cart'.format(SECURE_STRING))
+    r = s.get('http://{0}/{1}/cart'.format(_ip, SECURE_STRING))
 
     # Confirm that the request-response cycle completed successfully.
     assert_equal((r.status_code, r.text), (200, u'{"1": ["test", "test2"]}'))
@@ -516,7 +518,7 @@ def test_request_response():
         "sku": "test"
     }
 
-    r = s.put('http://127.0.0.1:8080/{0}/cart'.format(SECURE_STRING), data=json.dumps(data))
+    r = s.put('http://{0}/{1}/cart'.format(_ip, SECURE_STRING), data=json.dumps(data))
 
     data = {
         'success': False,
@@ -529,7 +531,7 @@ def test_request_response():
     # Confirm that the request-response cycle completed successfully.
     assert_equal((r.status_code, r.text), (200, data))
 
-    r = s.delete('http://127.0.0.1:8080/{0}/customer/{1}'.format(SECURE_STRING, '1'))
+    r = s.delete('http://{0}/{1}/customer/{2}'.format(_ip, SECURE_STRING, '1'))
 
     # Confirm that the request-response cycle completed successfully.
     data = {
@@ -540,7 +542,7 @@ def test_request_response():
 
     assert_equal((r.status_code, r.text), (200, json.dumps(data)))
 
-    r = s.get('http://127.0.0.1:8080/{0}/cart'.format(SECURE_STRING))
+    r = s.get('http://{0}/{1}/cart'.format(_ip, SECURE_STRING))
 
     # Confirm that the request-response cycle completed successfully.
     assert_equal((r.status_code, r.text), (200, u'{}'))
@@ -551,7 +553,7 @@ def test_request_response():
         'data': "test"
     }
     data = json.dumps(data)
-    r = s.delete('http://127.0.0.1:8080/{0}/sku/{1}'.format(SECURE_STRING, "test"))
+    r = s.delete('http://{0}/{1}/sku/{2}'.format(_ip, SECURE_STRING, "test"))
 
     # Confirm that the request-response cycle completed successfully.
     assert_equal((r.status_code, r.text), (200, data))
@@ -562,7 +564,7 @@ def test_request_response():
         'data': "test2"
     }
     data = json.dumps(data)
-    r = s.delete('http://127.0.0.1:8080/{0}/sku/{1}'.format(SECURE_STRING, "test2"))
+    r = s.delete('http://{0}/{1}/sku/{2}'.format(_ip, SECURE_STRING, "test2"))
 
     # Confirm that the request-response cycle completed successfully.
     assert_equal((r.status_code, r.text), (200, data))

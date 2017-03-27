@@ -1,3 +1,18 @@
+"""
+This web service serves as a basic store with 'customer', 'product' and 'cart' tables
+It supports following API calls:
+
+PUT /{secure_string}/sku -                                  adds product to the service
+DELETE /{secure_string}/sku/{product_sku} -                 removes product from the service by product_sku
+
+PUT /{secure_string}/customer -                             adds product to the service
+DELETE /{secure_string}/customer/{customer_id} -            removes customer from the service by customer_id
+
+GET /{secure_string}/cart -                                 returns all customer's carts
+PUT /{secure_string}/cart -                                 adds a product to the customer's cart
+DELETE /{secure_string}/cart/{customer_id}/{product_sku} -  removes a product from the customer's cart
+                                                            by customer_id and product_sku
+"""
 import json
 
 import cherrypy
@@ -10,18 +25,47 @@ _engine = create_engine('sqlite:///sale.db', echo=True)
 
 @cherrypy.expose
 class Customer(object):
+    """
+    This class handles interaction with the Customer object in the database
+    Methods:
+        PUT - inserts a new customer into the table
+        DELETE - removes a customer from the table
+    """
+
     @cherrypy.tools.accept(media='text/plain')
     @cherrypy.tools.json_out()
     def PUT(self):
+        """
+        This method adds a new customer into the customer table
+        :input:
+        data = {
+            'fist_name': 'customer_fist_name',
+            'last_name': 'customer_last_name'
+        }
+        :return:
+         res = {
+            'success': False, - was the insertion successful or not
+            'error': "", - error message
+            'data': data, - original input data
+            'id': None - id of the inserted row
+        }
+        """
         cl = cherrypy.request.headers['Content-Length']
         raw_body = cherrypy.request.body.read(int(cl))
-        data = json.loads(raw_body)
         res = {
             'success': False,
             'error': "",
-            'data': data,
+            'data': None,
             'id': None
         }
+
+        try:
+            data = json.loads(raw_body)
+            res['data'] = data
+        except:
+            res['error'] = "Cannot parse json"
+            return res
+
         conn = _engine.connect()
         insert = conn.execute(
             "INSERT INTO customer VALUES ('{0}', '{1}')".format(data['first_name'], data['last_name']))
@@ -38,37 +82,76 @@ class Customer(object):
     @cherrypy.tools.accept(media='text/plain')
     @cherrypy.tools.json_out()
     def DELETE(self, customer_id):
+        """
+        This method removes a customer for the table by id
+        and all products added to the cart of this customer
+        :param customer_id: customer's id
+        :return:
+        res = {
+            'success': False, - was deletion successful or not
+            'error': "", - error message
+            'data': customer_id - customer's id
+        }
+        """
         res = {
             'success': False,
             'error': "",
             'data': customer_id
         }
-
-        conn = _engine.connect()
-        conn.execute("DELETE FROM cart WHERE customer_id='{0}'".format(customer_id))
-        n = conn.execute("DELETE FROM customer WHERE rowid='{0}'".format(customer_id)).rowcount
-        if n:
-            res['success'] = True
+        if customer_id:
+            conn = _engine.connect()
+            conn.execute("DELETE FROM cart WHERE customer_id='{0}'".format(customer_id))
+            n = conn.execute("DELETE FROM customer WHERE rowid='{0}'".format(customer_id)).rowcount
+            if n:
+                res['success'] = True
+            else:
+                res['error'] = "Can not delete"
+            conn.close()
         else:
-            res['error'] = "Can not delete"
-        conn.close()
+            res['error'] = "No customer_id were passed"
 
         return res
 
 
 @cherrypy.expose
 class SKU(object):
+    """
+    This class handles interactions with the product table
+    Methods:
+        PUT: add a product to the table
+        DELETE: removes a product from the table
+    """
+
     @cherrypy.tools.accept(media='text/plain')
     @cherrypy.tools.json_out()
     def PUT(self):
+        """
+        This method adds a product to the table
+        :input:
+        data = {
+            'sku': '192837412', - product's sku number
+            'description: 'a test product' - product's description
+        }
+        :return:
+        res = {
+            'success': False, - was the insertion successful or not
+            'error': "", - error message
+            'data': data, - original input data
+        }
+        """
         cl = cherrypy.request.headers['Content-Length']
         raw_body = cherrypy.request.body.read(int(cl))
-        data = json.loads(raw_body)
         res = {
             'success': False,
             'error': "",
-            'data': data
+            'data': None
         }
+        try:
+            data = json.loads(raw_body)
+            res['data'] = data
+        except:
+            res['error'] = "Can not parse json"
+            return res
 
         conn = _engine.connect()
         sku = conn.execute("SELECT rowid FROM product WHERE sku='{0}'".format(data['sku'])).fetchone()
@@ -84,32 +167,61 @@ class SKU(object):
     @cherrypy.tools.accept(media='text/plain')
     @cherrypy.tools.json_out()
     def DELETE(self, product_id):
+        """
+        This method removes a product from the table
+        :param product_id: product's sku number
+        :return:
+        res = {
+            'success': False, - was deletion successful or not
+            'error': "", - error message
+            'data': product_id - product's sku number
+        }
+        """
         res = {
             'success': False,
             'error': "",
             'data': product_id
         }
-
-        conn = _engine.connect()
-        n = conn.execute("SELECT rowid FROM cart WHERE product_id='{0}'".format(product_id)).fetchone()
-        if not n:
-            n = conn.execute("DELETE FROM product WHERE sku='{0}'".format(product_id)).rowcount
-            if n:
-                res['success'] = True
+        if product_id:
+            conn = _engine.connect()
+            n = conn.execute("SELECT rowid FROM cart WHERE product_id='{0}'".format(product_id)).fetchone()
+            if not n:
+                n = conn.execute("DELETE FROM product WHERE sku='{0}'".format(product_id)).rowcount
+                if n:
+                    res['success'] = True
+                else:
+                    res['error'] = "Can not delete"
+                conn.close()
             else:
                 res['error'] = "Can not delete"
-            conn.close()
         else:
-            res['error'] = "Can not delete"
+            res['error'] = "No product_id were passed"
 
         return res
 
 
 @cherrypy.expose
 class Cart(object):
+    """
+    This class handles interactions with 'cart' table
+    Methods:
+        GET - returns all customer's carts
+        PUT - adds a product to the customer's cart
+        DELETE - removes a product from the customer's cart
+    """
+
     @cherrypy.tools.accept(media='text/plain')
     @cherrypy.tools.json_out()
     def GET(self):
+        """
+        This method return a JSON object of all customer's carts
+        :return:
+        '{"1": ["test", "test2"]}'
+
+        where:
+            "1" - customer's id
+            ["test", "test2"] - list of product's skus added to the customer's cart
+        """
         conn = _engine.connect()
         res = conn.execute("SELECT * FROM cart").fetchall()
         carts = {}
@@ -123,14 +235,33 @@ class Cart(object):
     @cherrypy.tools.accept(media='text/plain')
     @cherrypy.tools.json_out()
     def PUT(self):
+        """
+        This method inserts a product to the customer's cart
+        :input:
+        data = {
+            'customer_id': '1', - customer's id
+            'sku': 'test' - product's sku
+        }
+        :return:
+        res = {
+            'success': False, - was insertion successful
+            'error': "", - error message
+            'data': data - original data
+        }
+        """
         cl = cherrypy.request.headers['Content-Length']
         raw_body = cherrypy.request.body.read(int(cl))
-        data = json.loads(raw_body)
         res = {
             'success': False,
             'error': "",
-            'data': data
+            'data': None
         }
+        try:
+            data = json.loads(raw_body)
+            res['data'] = data
+        except:
+            res['error'] = "Can not parse json"
+            return res
 
         conn = _engine.connect()
         customer_id = conn.execute("SELECT rowid FROM customer WHERE rowid={0}".format(data['customer_id'])).fetchone()
@@ -158,27 +289,40 @@ class Cart(object):
     @cherrypy.tools.accept(media='text/plain')
     @cherrypy.tools.json_out()
     def DELETE(self, customer_id, product_id):
+        """
+        This method removes a product from the customer's cart
+        :param customer_id: customer's id
+        :param product_id: product's sku
+        :return:
+         res = {
+            'success': False, - was deletion successful or not
+            'error': "", - error message
+            'data': (customer_id, product_id) - customer's and product's ids
+        }
+        """
         res = {
             'success': False,
             'error': "",
             'data': (customer_id, product_id)
         }
-
-        conn = _engine.connect()
-        n = conn.execute("DELETE FROM cart WHERE customer_id='{0}' AND product_id='{1}'"
-                         .format(customer_id, product_id)).rowcount
-        if n:
-            res['success'] = True
+        if customer_id and product_id:
+            conn = _engine.connect()
+            n = conn.execute("DELETE FROM cart WHERE customer_id='{0}' AND product_id='{1}'"
+                             .format(customer_id, product_id)).rowcount
+            if n:
+                res['success'] = True
+            else:
+                res['error'] = "Can not delete"
+            conn.close()
         else:
-            res['error'] = "Can not delete"
-        conn.close()
+            res['error'] = "Either customer_id or product_id or both weren't passed"
 
         return res
 
 
 def setup_database():
     """
-    Create the `user_string` table in the database
+    Create the `product`, 'customer' and 'cart' tables in the database
     on server startup
     """
 
@@ -191,7 +335,7 @@ def setup_database():
 
 def cleanup_database():
     """
-    Destroy the `user_string` table from the database
+    Destroy the `product`, 'customer' and 'cart' tables from the database
     on server shutdown.
     """
 
