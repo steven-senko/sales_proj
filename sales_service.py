@@ -83,7 +83,7 @@ class Customer(object):
     @cherrypy.tools.json_out()
     def DELETE(self, customer_id):
         """
-        This method removes a customer for the table by id
+        This method removes a customer for the table by the customer's id along with all products in his cart
         and all products added to the cart of this customer
         :param customer_id: customer's id
         :return:
@@ -126,7 +126,7 @@ class SKU(object):
     @cherrypy.tools.json_out()
     def PUT(self):
         """
-        This method adds a product to the table
+        This method adds a product to the table if it's sku is not present in the table
         :input:
         data = {
             'sku': '192837412', - product's sku number
@@ -168,7 +168,7 @@ class SKU(object):
     @cherrypy.tools.json_out()
     def DELETE(self, product_id):
         """
-        This method removes a product from the table
+        This method removes a product from the table if it's id is not present in carstomer's cart
         :param product_id: product's sku number
         :return:
         res = {
@@ -236,7 +236,8 @@ class Cart(object):
     @cherrypy.tools.json_out()
     def PUT(self):
         """
-        This method inserts a product to the customer's cart
+        This method inserts a product to the customer's cart if
+        customer's id and product's sku is present in the database
         :input:
         data = {
             'customer_id': '1', - customer's id
